@@ -1,8 +1,5 @@
 # @author : Edwin Ismail
 import random
-import numpy as np
-import pandas as pd
-from numba import jit, cuda
 # initializing size of the dance
 dice = 6
 countlist = []
@@ -23,7 +20,7 @@ def randomSnakes(num):
         x = random.randint(1, 99)
         y = random.randint(1, 99)
         if y > x and countSnake < (num):
-            if not y in s_l_set:
+            if not y in s_l_set and not x in s_l_set:
                 randomSnake.append([y, x])
                 countSnake += 1
         for ele in randomSnake:
@@ -41,31 +38,30 @@ def randomLadders(num):
         x = random.randint(1, 100)
         y = random.randint(1, 100)
         if y < x and countLadder < (num):
-            if not y in s_l_set:
+            if not y in s_l_set and not x in s_l_set:
                 randomLadder.append([y, x])
                 countLadder += 1
         for ele in randomLadder:
             s_l_set.update(ele)
     return randomLadder
+#random snakes nad ladders generator for equal size i.e 5 
 
 
-# random snake and ladder generator
-
-def RandomSnake(numSnake, numLadder):
+def RandomSnake1(numSnake, numLadder):
     randomSnake = []
     countSnake = 0
     countLadder = 0
     s_l_set = set()
     s_l_set.update([])
     while len(randomSnake) < (numSnake+numLadder):
-        x = random.randint(1, 99)
-        y = random.randint(1, 99)
-        if y > x and countSnake < (numSnake):
-            if not y in s_l_set:
+        x = random.randint(1, 100)
+        y = random.randint(1, 100)
+        if y > x and countSnake < (numSnake) and (y-x) < 7 and y != 100:
+            if not y in s_l_set and not x in s_l_set:
                 randomSnake.append([y, x])
                 countSnake += 1
-        if y < x and countLadder < (numLadder):
-            if not y in s_l_set:
+        if y < x and countLadder < (numLadder) and (x-y) > 7:
+            if not y in s_l_set and not x in s_l_set:
                 randomSnake.append([y, x])
                 countLadder += 1
         for ele in randomSnake:
@@ -74,6 +70,35 @@ def RandomSnake(numSnake, numLadder):
     """df=pd.DataFrame(list(s_l_set),columns=['just'])
     print(df['just'].value_counts())"""
     return randomSnake
+
+# random snake and ladder generator
+
+
+def RandomSnake(numSnake, numLadder):
+    randomSnake = []
+    countSnake = 0
+    countLadder = 0
+    s_l_set = set()
+    s_l_set.update([])
+    while len(randomSnake) < (numSnake+numLadder) :
+        x = random.randint(1, 100)
+        y = random.randint(1, 100)
+        if y > x and countSnake < (numSnake) and y != 100:
+            if not y in s_l_set and  not x in s_l_set:
+                randomSnake.append([y, x])
+                countSnake += 1
+        if y < x and countLadder < (numLadder):
+            if not y in s_l_set and not x in s_l_set:
+                randomSnake.append([y, x])
+                countLadder += 1
+        for ele in randomSnake:
+            s_l_set.update(ele)
+    # just verifying if snakes and ladders are unique
+    """df=pd.DataFrame(list(s_l_set),columns=['just'])
+    print(df['just'].value_counts())"""
+    return randomSnake
+
+
 
 # this is the simulation of the game snakes and ladders
 
@@ -86,6 +111,7 @@ def gamesimulation(sl, dice):
         roll = random.randint(1, dice)
         token = token + roll
         count += 1
+        #contorls token should land exactly at 100
         if token > 100:
             token = token - roll
         for trans in sl:
@@ -101,7 +127,7 @@ def gamesimulation(sl, dice):
 def NumberOfGame(number):
     for num in range(0, number):
         countlist.append(gamesimulation(
-            randomLadders(10), dice))
+            snakes_ladders,dice))
     return countlist
 
 # this function is to present the result of the game
@@ -119,5 +145,4 @@ def results(countlist):
     print("Average length of the game is {}".format(sums/len(countlist)))
 
 
-results(NumberOfGame(100000))
-#RandomSnake(10, 10, randomSnake)
+results(NumberOfGame(1000000))
