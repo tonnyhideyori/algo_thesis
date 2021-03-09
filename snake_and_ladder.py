@@ -1,8 +1,12 @@
 # @author : Edwin Ismail
 import random
+import pickle
 # initializing size of the dance
 dice = 6
 countlist = []
+
+#just snakes 
+sl = [[49, 98], [67, 89], [37, 87], [10, 41], [85, 73], [65, 39], [72, 42], [24, 23],[8, 21], [47, 93], [58, 70], [9, 84], [6, 99], [35, 11], [54, 5], [62, 20], [86, 44], [76, 43], [40, 25]]
 
 
 # snakes and ladders for the game for a snake element[0]<element[1] and for a ladder element[0]<element[1]
@@ -143,6 +147,43 @@ def results(countlist):
     for ele in countlist:
         sums += ele[0]
     print("Average length of the game is {}".format(sums/len(countlist)))
+def MiniLength(countlist):
+   return (min(countlist))[1]
+#results(NumberOfGame(100000))
+"""listmin=[]
+for i in range(0,100):
+    listmin.append(MiniLength(NumberOfGame(1000)))
+#print(listmin)"""
 
 
-results(NumberOfGame(1000000))
+def gamesimulation2(sl, dice):
+    # initialization of parameters count for counting the length of game, path records the step of the game to completion, token is actual element moving through the game
+    count = 0
+    path = []
+    token = 0
+    while token < 100:
+        roll = random.randint(1, dice)
+        token = token + roll
+        count += 1
+        #contorls token should land exactly at 100
+        if token > 100:
+            token = token - roll
+        for trans in sl:
+            if token == trans[0]:
+                token = trans[1]
+                break
+        path.append(token)
+    return [count, path,sl]
+
+
+listmin = []
+for i in range(0, 1000):
+    listmin.append(MiniLength(NumberOfGame(10000)))
+#print(listmin)
+#saving files to byte for later analysis
+with open('minimumlength', 'wb') as fp:
+    pickle.dump(listmin, fp)
+
+"""with open('minimumlength', 'rb') as fp:
+    itemlist = pickle.load(fp)
+print(itemlist)"""
