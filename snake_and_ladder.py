@@ -1,19 +1,53 @@
 # @author : Edwin Ismail
 import random
 import pickle
+import more_itertools
+from numba import njit
+from numba.typed import List
 # initializing size of the dance
 dice = 6
-countlist = []
 
-#just snakes 
-sl = [[49, 98], [67, 89], [37, 87], [10, 41], [85, 73], [65, 39], [72, 42], [24, 23],[8, 21], [47, 93], [58, 70], [9, 84], [6, 99], [35, 11], [54, 5], [62, 20], [86, 44], [76, 43], [40, 25]]
+#randomizing original snakes and ladders
 
+
+def originalRandom():
+    ladders = [[1, 38], [4, 14], [9, 31], [21, 42], [
+        28, 84], [36, 44], [51, 67], [71, 91], [80, 100]]
+    snakes = [[16, 6], [47, 26], [49, 11], [56, 53], [62, 19],
+            [64, 60], [87, 24], [93, 73], [95, 75], [98, 78]]
+    ele1 = []
+    ele2 = []
+    ele3 = []
+    ele4 = []
+    for x in ladders:
+        ele1.append(x[0])
+        ele2.append(x[1])
+    for x in snakes:
+        ele3.append(x[0])
+        ele4.append(x[1])
+    random.shuffle(ele1)
+    random.shuffle(ele2)
+    random.shuffle(ele3)
+    random.shuffle(ele4)
+    la = list(more_itertools.zip_equal(ele1, ele2))
+    sn = list(more_itertools.zip_equal(ele3, ele4))
+    sl = [list(x) for x in la]
+    sn = [list(x) for x in sn]
+    for ele in sn:
+        if ele[0] < ele[1]:
+            ele[0], ele[1] = ele[1], ele[0]
+    for ele in sl:
+        if ele[0] > ele[1]:
+            ele[0], ele[1] = ele[1], ele[0]
+    return sn+sl
 
 # snakes and ladders for the game for a snake element[0]<element[1] and for a ladder element[0]<element[1]
 snakes_ladders = [[1, 38], [4, 14], [9, 31], [21, 42], [28, 84], [36, 44], [51, 67], [71, 91], [80, 100], [16, 6], [47, 26], [49, 11], [56, 53], [62, 19],
                   [64, 60], [87, 24], [93, 73], [95, 75], [98, 78]]
 
 # random snakes generator
+
+
 
 def randomSnakes(num):
     randomSnake = []
@@ -32,6 +66,8 @@ def randomSnakes(num):
     return randomSnake
 
 # random ladders generator
+
+
 
 def randomLadders(num):
     randomLadder = []
@@ -129,9 +165,10 @@ def gamesimulation(sl, dice):
 
 
 def NumberOfGame(number):
+    countlist = []
     for num in range(0, number):
         countlist.append(gamesimulation(
-            snakes_ladders,dice))
+            originalRandom(),dice))
     return countlist
 
 # this function is to present the result of the game
@@ -139,17 +176,22 @@ def NumberOfGame(number):
 
 def results(countlist):
     # print((min(countlist))[1])
-    print("The minimum lenght of the game is {} \n the shortest path is {}".format(
+    """print("The minimum lenght of the game is {} \n the shortest path is {}".format(
         (min(countlist))[0], (min(countlist))[1]))
     print("The maximum lenght of the game is {} \n the longest path is {}".format(
         (max(countlist))[0], (max(countlist))[1]))
     sums = 0
     for ele in countlist:
         sums += ele[0]
-    print("Average length of the game is {}".format(sums/len(countlist)))
+    print("Average length of the game is {}".format(sums/len(countlist)))"""
+    return countlist
+#minimumlength
 def MiniLength(countlist):
    return (min(countlist))[1]
-#results(NumberOfGame(100000))
+for i in range(0,10):
+    countlist=results(NumberOfGame(100000))
+    with open('game_random_snake_og_se', 'wb') as fp:
+        pickle.dump(countlist, fp)
 """listmin=[]
 for i in range(0,100):
     listmin.append(MiniLength(NumberOfGame(1000)))
@@ -178,11 +220,12 @@ def gamesimulation2(sl, dice):
 
 listmin = []
 for i in range(0, 1000):
-    listmin.append(MiniLength(NumberOfGame(10000)))
+    listmin.append(NumberOfGame(100))
 #print(listmin)
 #saving files to byte for later analysis
-with open('minimumlength', 'wb') as fp:
+with open('avg_random_og', 'wb') as fp:
     pickle.dump(listmin, fp)
+
 
 """with open('minimumlength', 'rb') as fp:
     itemlist = pickle.load(fp)

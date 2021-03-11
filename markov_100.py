@@ -6,6 +6,7 @@ you can vary the size of the dice and size of the board
 
 import numpy as np
 import random
+import more_itertools
 board = 100
 state = board+1
 result = []
@@ -20,6 +21,37 @@ snakes_ladders = [[1, 38], [4, 14], [9, 31], [21, 42], [28, 84], [36, 44], [51, 
 
 # random randomLadders
 
+
+def originalRandom():
+    ladders = [[1, 38], [4, 14], [9, 31], [21, 42], [
+        28, 84], [36, 44], [51, 67], [71, 91], [80, 100]]
+    snakes = [[16, 6], [47, 26], [49, 11], [56, 53], [62, 19],
+              [64, 60], [87, 24], [93, 73], [95, 75], [98, 78]]
+    ele1 = []
+    ele2 = []
+    ele3 = []
+    ele4 = []
+    for x in ladders:
+        ele1.append(x[0])
+        ele2.append(x[1])
+    for x in snakes:
+        ele3.append(x[0])
+        ele4.append(x[1])
+    random.shuffle(ele1)
+    random.shuffle(ele2)
+    random.shuffle(ele3)
+    random.shuffle(ele4)
+    la = list(more_itertools.zip_equal(ele1, ele2))
+    sn = list(more_itertools.zip_equal(ele3, ele4))
+    sl = [list(x) for x in la]
+    sn = [list(x) for x in sn]
+    for ele in sn:
+        if ele[0] < ele[1]:
+            ele[0], ele[1] = ele[1], ele[0]
+    for ele in sl:
+        if ele[0] > ele[1]:
+            ele[0], ele[1] = ele[1], ele[0]
+    return sn+sl
 
 def randomLadders(num):
     randomLadder = []
@@ -156,7 +188,17 @@ def expectationOnce():
                 transition_matrix1(dice, board, state), s_n_l, state)))
     print(result, sum(result)/len(result), min(result), max(result))
 
+def expectationOriginal():
+    for dice in range(2, 101, 1):
+        result.append(fundamental_form(snake_ladder(
+            transition_matrix1(6, board, state), originalRandom(), state)))
+    print(result, sum(result)/len(result), min(result), max(result))
 
+
+def expectation():
+    print(fundamental_form(snake_ladder(
+            transition_matrix1(6, board, state), snakes_ladders, state)))
+    
 # RandomSnake(10, 9, randomSnake)
 #expectationOnce()
-expectation100dice()
+expectation()
