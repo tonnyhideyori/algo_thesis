@@ -2,8 +2,6 @@
 import random
 import pickle
 import more_itertools
-from numba import njit
-from numba.typed import List
 # initializing size of the dance
 dice = 6
 
@@ -167,8 +165,9 @@ def gamesimulation(sl, dice):
 def NumberOfGame(number):
     countlist = []
     for num in range(0, number):
+        x = originalRandom()
         countlist.append(gamesimulation(
-            originalRandom(),dice))
+            x,dice))
     return countlist
 
 # this function is to present the result of the game
@@ -176,22 +175,25 @@ def NumberOfGame(number):
 
 def results(countlist):
     # print((min(countlist))[1])
-    """print("The minimum lenght of the game is {} \n the shortest path is {}".format(
+    print("The minimum lenght of the game is {} \n the shortest path is {}".format(
         (min(countlist))[0], (min(countlist))[1]))
     print("The maximum lenght of the game is {} \n the longest path is {}".format(
         (max(countlist))[0], (max(countlist))[1]))
     sums = 0
     for ele in countlist:
         sums += ele[0]
-    print("Average length of the game is {}".format(sums/len(countlist)))"""
+    print("Average length of the game is {}".format(sums/len(countlist)))
     return countlist
 #minimumlength
 def MiniLength(countlist):
    return (min(countlist))[1]
-for i in range(0,10):
+for i in range(0,100):
     countlist=results(NumberOfGame(100000))
     with open('game_random_snake_og_se', 'wb') as fp:
         pickle.dump(countlist, fp)
+results(NumberOfGame(100000))
+with open('game_random_snake_og_se', 'wb') as fp:
+    pickle.dump(countlist, fp)
 """listmin=[]
 for i in range(0,100):
     listmin.append(MiniLength(NumberOfGame(1000)))
