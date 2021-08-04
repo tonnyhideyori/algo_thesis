@@ -41,20 +41,15 @@ class Snakes(object):
     def RandomSnake1(self,length):
         randomSnake = []
         countSnake = 0
-        countLadder = 0
         s_l_set = set()
         s_l_set.update([])
         while len(randomSnake) < (self.numbersnake+self.numberladder):
             x = random.randint(1, 100)
             y = random.randint(1, 100)
-            if y > x and countSnake < (self.numbersnake) and (y-x) < length and y != 100:
+            if y > x and countSnake < (self.numbersnake) and (y-x) == length and y != 100:
                 if not y in s_l_set and not x in s_l_set:
                     randomSnake.append([y, x])
                     countSnake += 1
-            if y < x and countLadder < (self.numberladder) and (x-y) > length:
-                if not y in s_l_set and not x in s_l_set:
-                    randomSnake.append([y, x])
-                    countLadder += 1
             for ele in randomSnake:
                 s_l_set.update(ele)
         return randomSnake
@@ -74,7 +69,7 @@ class Snakes(object):
                 s_l_set.update(ele)
         return randomSnake
 
-    def random_snakes_ladders(self):
+    def random_snakes_ladders(self,length):
         randomSnake = []
         countSnake = 0
         countLadder = 0
@@ -83,11 +78,11 @@ class Snakes(object):
         while len(randomSnake) < (self.numbersnake+self.numberladder):
             x = random.randint(1, 100)
             y = random.randint(1, 100)
-            if y > x and countSnake < (self.numbersnake) and y != 100:
+            if y > x and countSnake < (self.numbersnake) and y != 100 and (y-x)==length:
                 if not y in s_l_set and not x in s_l_set:
                     randomSnake.append([y, x])
                     countSnake += 1
-            if y < x and countLadder < (self.numberladder):
+            if y < x and countLadder < (self.numberladder) and (x-y)==length:
                 if not y in s_l_set and not x in s_l_set:
                     randomSnake.append([y, x])
                     countLadder += 1

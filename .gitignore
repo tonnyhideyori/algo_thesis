@@ -1,2 +1,4 @@
 deprecated
 node_modules
+results
+__pycache__

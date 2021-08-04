@@ -17,8 +17,6 @@ class Markov(object):
         
         for d in range(1,self.dice+1):
             self.dist.append(1/(d*nth.harmonic()))
-        #print(self.dist[0])
-        #print(sum(self.dist))
         if sum(self.dist)>1:
             #print(1-sum(self.dist))
             self.dist[len(self.dist)-1]=self.dist[len(self.dist)-1]+(1-sum(self.dist))
@@ -40,7 +38,7 @@ class Markov(object):
         rv += ['  ' + ' & '.join(l.split()) + r'\\' for l in lines]
         rv += [r'\end{array}\right)']
         return '\n'.join(rv)
-    
+    #more than 100
     def transition_matrix2(self):
         self.state=self.state + self.dice - 1
         M = np.zeros((self.state, self.state), dtype=float)
@@ -65,15 +63,13 @@ class Markov(object):
                 if j <= (Tdice) and i <= (self.board):
                     if j+i <= len(M):
                         M[i,i+j-1]=(self.dice - abs(j-(self.dice+1)))/(self.dice*self.dice)
-                """if i > self.board-Tdice and i<=self.board:
-                    if j+i <= len(M):
-                        M[i, j+i-1]=(self.dice - abs(j-(self.dice+1)))/(self.dice*self.dice)"""
         for i in range(0,self.state):
             for j in range(1,self.state):
                 acc += M[i,j]
             M[i,i]=1-acc
             acc=0
         return M
+    #origonal
     def transition_matrix1(self):
         M = np.zeros((self.state, self.state), dtype=float)
         for i in range(0, self.state):
@@ -86,6 +82,7 @@ class Markov(object):
                         M[i, j+i] = 1/self.dice
         
         return M
+    #harmonic
     def transition_harmonic(self):
         acc=0
         M = np.zeros((self.state, self.state), dtype=float)
@@ -112,12 +109,22 @@ class Markov(object):
                         Y[snake[0]] = 0
                         Y[i, snake[1]] = Y[i, snake[1]] + x
                         Y[i, snake[0]] = 0
-
         return Y
-    
+    #more than 100
+    def fundamental_form1(self, M):
+        Q = M[:-6, :-6]
+        N = np.linalg.inv(np.identity(len(Q)) - Q)
+        length = np.matmul(N, np.ones((len(N), 1)))
+        # print(self.bmatrix(length))
+        return length[0][0]
     def fundamental_form(self, M):
         Q = M[:-1, :-1]
         N = np.linalg.inv(np.identity(len(Q)) - Q)
         length = np.matmul(N, np.ones((len(N), 1)))
         # print(self.bmatrix(length))
         return length[0][0]
+    
+    def number_visit(self, M):
+        Q = M[:-1, :-1]
+        N = np.linalg.inv(np.identity(len(Q)) - Q)
+        return N
